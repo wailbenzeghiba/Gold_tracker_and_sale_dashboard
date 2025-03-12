@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      primaryColor:  Color.fromARGB(255, 114, 113, 114),
+      primaryColor:  Color.fromARGB(255, 22, 22, 25),
       secondaryHeaderColor: Color.fromARGB(255, 39, 38, 39),
       cardColor: Color.fromARGB(255, 199, 195, 199),
     
