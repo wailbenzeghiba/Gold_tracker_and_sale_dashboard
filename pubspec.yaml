@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite : 
+  path:
+  sqflite_common_ffi: ^2.0.0+1
   bitsdojo_window:
   http:
   fl_chart:

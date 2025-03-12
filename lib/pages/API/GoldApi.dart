@@ -13,11 +13,22 @@ class MetalPrice {
 
 double currentPrice = 0.0;
 
-Future<MetalPrice?> fetchGoldPrices({required String metal, required String weightUnit, required String currency}) async {
+Future<Map<String, Map<String, double>>?> fetchGoldPrices({
+  required String metal,
+  required String weightUnit,
+  required String currency,
+  String? karat,
+}) async {
   var headers = {
     'x-api-key': 'sk_D3562492a6A1bc3eC38cE319373e9Ab5bD0e1e1c65cE14fd'
   };
+
   var requestUrl = 'https://gold.g.apised.com/v1/latest?metals=$metal&base_currency=$currency&currencies=$currency&weight_unit=$weightUnit';
+  
+  if (karat != null) {
+    requestUrl += '&karat=$karat';
+  }
+
   print('Request URL: $requestUrl');
   var request = http.Request('GET', Uri.parse(requestUrl));
 
@@ -48,7 +59,7 @@ Future<MetalPrice?> fetchGoldPrices({required String metal, required String weig
 
       if (price != null) {
         currentPrice = price;
-        return MetalPrice(metalName: metal, currency: currency, price: price);
+        return {metal: {karat ?? 'default': price}};
       } else {
         print('Price not found for $metal in $currency');
         return null;
