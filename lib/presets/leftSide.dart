@@ -1,8 +1,9 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/Dashboard.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/homePage.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/inventory.dart';
-import 'package:gold_tracking_desktop_stock_app/presets/rightSide.dart';
+
 
 
 class Leftside extends StatefulWidget {
@@ -51,7 +52,7 @@ class _LeftsideState extends State<Leftside> {
                 children: [
                   buildListTile(context, 'Dashboard', Dashboard(), Icons.analytics_outlined),
                   buildListTile(context, 'Inventory', Inventory(), Icons.inventory_2_outlined),
-                  buildListTile(context, 'Prices', Rightside(), Icons.price_change_outlined),
+                  buildListTile(context, 'Prices', homePage(), Icons.price_change_outlined),
                 ],
               ),
             ),

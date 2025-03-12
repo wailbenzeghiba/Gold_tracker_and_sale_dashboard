@@ -12,10 +12,10 @@ class Rightside extends StatefulWidget {
 }
 
 class _RightsideState extends State<Rightside> {
-  String metalName = 'XAU';
   String currency = 'USD';
   String weightUnit = 'gram'; // Set weight unit to "gram" by default
-  double currentPrice = 0.0;
+  Map<String, double> prices = {};
+  bool isLoading = false;
 
   final Map<String, String> metalNames = {
     'XAU': 'Gold',
@@ -31,14 +31,22 @@ class _RightsideState extends State<Rightside> {
   }
 
   Future<void> updateGoldPrices() async {
-    var metalPrice = await fetchGoldPrices(metal: metalName, weightUnit: weightUnit, currency: currency);
-    if (metalPrice != null) {
-      setState(() {
-        metalName = metalPrice.metalName;
-        currency = metalPrice.currency;
-        currentPrice = metalPrice.price;
-      });
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, double> newPrices = {};
+    for (String metal in metalNames.keys) {
+      var metalPrice = await fetchGoldPrices(metal: metal, weightUnit: weightUnit, currency: currency);
+      if (metalPrice != null) {
+        newPrices[metal] = metalPrice.price;
+      }
     }
+
+    setState(() {
+      prices = newPrices;
+      isLoading = false;
+    });
   }
 
   @override
@@ -81,30 +89,6 @@ class _RightsideState extends State<Rightside> {
                   Row(
                     children: [
                       Text(
-                        'Metal: ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      DropdownButton<String>(
-                        value: metalName,
-                        items: metalNames.keys.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(metalNames[value]!),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            metalName = newValue!;
-                            updateGoldPrices();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text(
                         'Currency: ',
                         style: TextStyle(fontSize: 18),
                       ),
@@ -124,20 +108,35 @@ class _RightsideState extends State<Rightside> {
                           });
                         },
                       ),
+                      SizedBox(width: 280),
+                      Text(
+                        'Weight Unit: gram',
+                        style: TextStyle(fontSize: 18),
+                      ),
                     ],
                   ),
                   SizedBox(height: 16),
-                  Text(
-                    'Metal: ${metalNames[metalName]}',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    'Currency: $currency',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    'Price: $currentPrice $currency',
-                    style: TextStyle(fontSize: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: metalNames.keys.map((metal) {
+                      return Column(
+                        children: [
+                          Text(
+                            metalNames[metal]!,
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            isLoading
+                                ? 'Loading...'
+                                : prices[metal] != null
+                                    ? '${prices[metal]!.toStringAsFixed(2)} $currency '
+                                    : 'N/A',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
