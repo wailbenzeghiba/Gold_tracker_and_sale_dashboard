@@ -14,8 +14,7 @@ class Rightside extends StatefulWidget {
 class _RightsideState extends State<Rightside> {
   String metalName = 'XAU';
   String currency = 'USD';
-  String weightUnit = 'gram';
-  Timer? timer;
+  String weightUnit = 'gram'; // Set weight unit to "gram" by default
   double currentPrice = 0.0;
 
   final Map<String, String> metalNames = {
@@ -28,20 +27,7 @@ class _RightsideState extends State<Rightside> {
   @override
   void initState() {
     super.initState();
-    fetchGoldPricesPeriodically();
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  void fetchGoldPricesPeriodically() {
     updateGoldPrices();
-    timer = Timer.periodic(Duration(minutes: 1), (timer) {
-      updateGoldPrices();
-    });
   }
 
   Future<void> updateGoldPrices() async {
@@ -79,7 +65,7 @@ class _RightsideState extends State<Rightside> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Gold Prices',
+                        'Metal Prices',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -109,31 +95,6 @@ class _RightsideState extends State<Rightside> {
                         onChanged: (String? newValue) {
                           setState(() {
                             metalName = newValue!;
-                            updateGoldPrices();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Text(
-                        'Weight Unit: ',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      DropdownButton<String>(
-                        value: weightUnit,
-                        items: <String>['gram', 'ounce', 'kilogram']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            weightUnit = newValue!;
                             updateGoldPrices();
                           });
                         },
@@ -175,7 +136,7 @@ class _RightsideState extends State<Rightside> {
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    'Price: $currentPrice',
+                    'Price: $currentPrice $currency',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],
