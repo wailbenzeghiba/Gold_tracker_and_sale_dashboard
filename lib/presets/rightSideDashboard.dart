@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
 
-
 class RightSideDashboard extends StatefulWidget {
   const RightSideDashboard({super.key});
 
@@ -18,6 +17,8 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
   double _monthlyNetProfit = 0.0;
   double _yearlyNetProfit = 0.0;
 
+  Map<String, dynamic>? _selectedProduct;
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +28,7 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
   Future<void> _loadDashboardData() async {
     final products = await DatabaseHelper().getProducts();
     final profit = await DatabaseHelper().getProfit();
+
     setState(() {
       _totalProducts = products.length;
       _totalGoldWeight = products.fold(0.0, (sum, product) {
@@ -35,12 +37,14 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
         }
         return sum;
       });
+
       _totalSilverWeight = products.fold(0.0, (sum, product) {
         if (product['type'] == 'Silver') {
           return sum + (product['weight'] * product['quantity']);
         }
         return sum;
       });
+
       _totalValue = products.fold(0.0, (sum, product) => sum + product['price'] * product['quantity']);
       _netProfit = profit['net_profit'];
       _monthlyNetProfit = profit['monthly_net_profit'];
@@ -50,11 +54,12 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
 
   void _showProductSoldDialog(BuildContext context) {
     final _quantityController = TextEditingController(text: '1');
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Product Sold'),
+          title: const Text('Product Sold'),
           content: SingleChildScrollView(
             child: Column(
               children: [
@@ -62,11 +67,11 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   future: DatabaseHelper().getProducts(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Text('No products available');
+                      return const Text('No products available');
                     } else {
                       return DropdownButtonFormField<Map<String, dynamic>>(
                         items: snapshot.data!.map((product) {
@@ -80,15 +85,15 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                             _selectedProduct = selectedProduct;
                           });
                         },
-                        decoration: InputDecoration(labelText: 'Select Product'),
+                        decoration: const InputDecoration(labelText: 'Select Product'),
                       );
                     }
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _quantityController,
-                  decoration: InputDecoration(labelText: 'Quantity Sold'),
+                  decoration: const InputDecoration(labelText: 'Quantity Sold'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -96,10 +101,8 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -119,7 +122,9 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   if (newQuantity <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('The quantity for ${_selectedProduct!['name']} is now 0 and the product has been deleted.'),
+                        content: Text(
+                          'The quantity for ${_selectedProduct!['name']} is now 0 and the product has been deleted.',
+                        ),
                       ),
                     );
                   }
@@ -128,7 +133,7 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                     _netProfit += profit;
                     _monthlyNetProfit += profit;
                     _yearlyNetProfit += profit;
-                    _loadDashboardData();
+                    _loadDashboardData(); // Reload data after update
                   });
 
                   await DatabaseHelper().updateProfit(_netProfit, _monthlyNetProfit, _yearlyNetProfit);
@@ -136,7 +141,7 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Confirm'),
+              child: const Text('Confirm'),
             ),
           ],
         );
@@ -144,59 +149,51 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
     );
   }
 
-  Map<String, dynamic>? _selectedProduct;
-
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        color: Theme.of(context).cardColor,
-        child: SingleChildScrollView(
+    return Container(
+      color: Colors.white38,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Dashboard',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Dashboard',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.attach_money),
-                      onPressed: () {
-                        _showProductSoldDialog(context);
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.attach_money),
+                    onPressed: () {
+                      _showProductSoldDialog(context);
+                    },
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildDashboardCard('Total Products', _totalProducts.toString()),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2) ),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Total Silver Weight (grams)', _totalSilverWeight.toStringAsFixed(2)),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Total Value', _totalValue.toStringAsFixed(2)),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Net Profit', _netProfit.toStringAsFixed(2)),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Monthly Net Profit', _monthlyNetProfit.toStringAsFixed(2)),
-                    SizedBox(height: 16),
-                    _buildDashboardCard('Yearly Net Profit', _yearlyNetProfit.toStringAsFixed(2)),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 16),
+
+              // Dashboard Data Cards
+              _buildDashboardCard('Total Products', _totalProducts.toString()),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2)),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Total Silver Weight (grams)', _totalSilverWeight.toStringAsFixed(2)),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Total Value', _totalValue.toStringAsFixed(2)),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Net Profit', _netProfit.toStringAsFixed(2)),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Monthly Net Profit', _monthlyNetProfit.toStringAsFixed(2)),
+              const SizedBox(height: 16),
+              _buildDashboardCard('Yearly Net Profit', _yearlyNetProfit.toStringAsFixed(2)),
             ],
           ),
         ),
@@ -207,6 +204,9 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
   Widget _buildDashboardCard(String title, String value) {
     return Card(
       color: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -214,15 +214,15 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
           children: [
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,

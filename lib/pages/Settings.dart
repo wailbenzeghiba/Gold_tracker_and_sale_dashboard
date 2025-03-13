@@ -16,6 +16,7 @@ class Settings extends StatelessWidget {
           Expanded(
             child: Column(
               children: [
+                // Window title bar
                 WindowTitleBarBox(
                   child: Row(
                     children: [
@@ -24,7 +25,10 @@ class Settings extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(child: RightSideSettings()),
+                // Replace Expanded with Flexible or SizedBox
+                Flexible(
+                  child: RightSideSettings(),
+                ),
               ],
             ),
           ),
