@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/presets/WindowButtons.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/API/GoldApi.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/product_list_page.dart';
 
 class RightsidestockT extends StatefulWidget {
   const RightsidestockT({super.key});
@@ -56,11 +57,24 @@ class _RightsidestockTState extends State<RightsidestockT> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: () {
-                          setState(() {});
-                        },
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.list),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProductListPage()),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.refresh),
+                            onPressed: () {
+                              setState(() {});
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -196,40 +210,6 @@ class _RightsidestockTState extends State<RightsidestockT> {
                           },
                           child: Text('Add Product'),
                         ),
-                        SizedBox(height: 16),
-                        FutureBuilder<List<Map<String, dynamic>>>(
-                          future: DatabaseHelper().getProducts(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Text('No products in inventory');
-                            } else {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  var product = snapshot.data![index];
-                                  return ListTile(
-                                    title: Text(product['name']),
-                                    subtitle: Text(
-                                      'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}',
-                                    ),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () async {
-                                        await DatabaseHelper().deleteProduct(product['id']);
-                                        setState(() {});
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -239,6 +219,169 @@ class _RightsidestockTState extends State<RightsidestockT> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddProductDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Add Product'),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(labelText: 'Product Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a product name';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _selectedType,
+                        decoration: InputDecoration(labelText: 'Metal Type'),
+                        items: _metalTypes.map((String type) {
+                          return DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedType = newValue!;
+                            _selectedKarat = null;
+                          });
+                        },
+                      ),
+                      if (_selectedType == 'Gold')
+                        DropdownButtonFormField<String>(
+                          value: _selectedKarat,
+                          decoration: InputDecoration(labelText: 'Karat'),
+                          items: _goldKarats.map((String karat) {
+                            return DropdownMenuItem<String>(
+                              value: karat,
+                              child: Text(karat),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedKarat = newValue;
+                            });
+                          },
+                        ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _weightController,
+                        decoration: InputDecoration(labelText: 'Weight (grams)'),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the weight';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _quantityController,
+                        decoration: InputDecoration(labelText: 'Quantity'),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the quantity';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        controller: _sellPriceController,
+                        decoration: InputDecoration(labelText: 'Sell Price'),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the sell price';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            'Currency: ',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          DropdownButton<String>(
+                            value: currency,
+                            items: _currencies.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                currency = newValue!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      try {
+                        double weight = double.parse(_weightController.text);
+                        double pricePerGram = await _getPricePerGram();
+                        double totalPrice = weight * pricePerGram;
+
+                        Map<String, dynamic> product = {
+                          'name': _nameController.text,
+                          'type': _selectedType,
+                          'karat': _selectedKarat,
+                          'weight': weight,
+                          'price': totalPrice,
+                          'quantity': int.parse(_quantityController.text),
+                          'sell_price': double.parse(_sellPriceController.text),
+                        };
+
+                        await DatabaseHelper().insertProduct(product);
+                        Navigator.of(context).pop();
+                        setState(() {});
+                      } catch (e) {
+                        // Handle parsing error
+                        print('Error: $e');
+                      }
+                    }
+                  },
+                  child: Text('Add Product'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
