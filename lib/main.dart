@@ -1,6 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
-import 'package:gold_tracking_desktop_stock_app/pages/homePage.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/Dashboard.dart';
 import 'package:gold_tracking_desktop_stock_app/theme/theme.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
         
       
-      home: WindowBorder(color: Colors.black,width: 1,child: const homePage()),
+      home: WindowBorder(color: Colors.black,width: 1,child: const Dashboard()),
     );
   }
 }

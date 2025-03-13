@@ -21,7 +21,6 @@ class _RightsidestockTState extends State<RightsidestockT> {
   final _basePriceController = TextEditingController(); // Add base price controller
   String _selectedType = 'Gold';
   String? _selectedKarat;
-  double _price = 0.0;
   String currency = 'DZD'; // Define the currency variable
 
   final List<String> _metalTypes = ['Gold', 'Silver', 'Platinum', 'Palladium'];

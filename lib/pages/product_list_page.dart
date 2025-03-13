@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
-import 'package:gold_tracking_desktop_stock_app/theme/theme.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/API/GoldApi.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -45,6 +44,7 @@ class _ProductListPageState extends State<ProductListPage> {
     final _weightController = TextEditingController(text: product['weight'].toString());
     final _quantityController = TextEditingController(text: product['quantity'].toString());
     final _sellPriceController = TextEditingController(text: product['sell_price'].toString());
+    final _basePriceController = TextEditingController(text: product['base_price'].toString());
     String _selectedType = product['type'];
     String? _selectedKarat = product['karat'];
     String currency = 'DZD'; // Define the currency variable
@@ -141,6 +141,18 @@ class _ProductListPageState extends State<ProductListPage> {
                         },
                       ),
                       SizedBox(height: 16),
+                      TextFormField(
+                        controller: _basePriceController,
+                        decoration: InputDecoration(labelText: 'Base Price'),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the base price';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 16),
                       Row(
                         children: [
                           Text(
@@ -190,6 +202,7 @@ class _ProductListPageState extends State<ProductListPage> {
                           'price': totalPrice,
                           'quantity': int.parse(_quantityController.text),
                           'sell_price': double.parse(_sellPriceController.text),
+                          'base_price': double.parse(_basePriceController.text),
                         };
 
                         await DatabaseHelper().updateProduct(product['id'], updatedProduct);
@@ -280,7 +293,7 @@ class _ProductListPageState extends State<ProductListPage> {
                           child: ListTile(
                             title: Text(product['name']),
                             subtitle: Text(
-                              'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}',
+                              'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}, Base Price: ${product['base_price']}',
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
