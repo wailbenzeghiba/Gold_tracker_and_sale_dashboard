@@ -18,6 +18,7 @@ class _RightsidestockTState extends State<RightsidestockT> {
   final _weightController = TextEditingController();
   final _quantityController = TextEditingController();
   final _sellPriceController = TextEditingController();
+  final _basePriceController = TextEditingController(); // Add base price controller
   String _selectedType = 'Gold';
   String? _selectedKarat;
   double _price = 0.0;
@@ -164,6 +165,18 @@ class _RightsidestockTState extends State<RightsidestockT> {
                           },
                         ),
                         SizedBox(height: 16),
+                        TextFormField(
+                          controller: _basePriceController, // Add base price field
+                          decoration: InputDecoration(labelText: 'Base Price'),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter the base price';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
                         Row(
                           children: [
                             Text(
@@ -202,6 +215,7 @@ class _RightsidestockTState extends State<RightsidestockT> {
                                 'price': totalPrice,
                                 'quantity': int.parse(_quantityController.text),
                                 'sell_price': double.parse(_sellPriceController.text),
+                                'base_price': double.parse(_basePriceController.text), // Add base price to product
                               };
 
                               await DatabaseHelper().insertProduct(product);
@@ -219,169 +233,6 @@ class _RightsidestockTState extends State<RightsidestockT> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showAddProductDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text('Add Product'),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: InputDecoration(labelText: 'Product Name'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a product name';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: _selectedType,
-                        decoration: InputDecoration(labelText: 'Metal Type'),
-                        items: _metalTypes.map((String type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedType = newValue!;
-                            _selectedKarat = null;
-                          });
-                        },
-                      ),
-                      if (_selectedType == 'Gold')
-                        DropdownButtonFormField<String>(
-                          value: _selectedKarat,
-                          decoration: InputDecoration(labelText: 'Karat'),
-                          items: _goldKarats.map((String karat) {
-                            return DropdownMenuItem<String>(
-                              value: karat,
-                              child: Text(karat),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedKarat = newValue;
-                            });
-                          },
-                        ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        controller: _weightController,
-                        decoration: InputDecoration(labelText: 'Weight (grams)'),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the weight';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        controller: _quantityController,
-                        decoration: InputDecoration(labelText: 'Quantity'),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the quantity';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        controller: _sellPriceController,
-                        decoration: InputDecoration(labelText: 'Sell Price'),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the sell price';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Text(
-                            'Currency: ',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          DropdownButton<String>(
-                            value: currency,
-                            items: _currencies.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                currency = newValue!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        double weight = double.parse(_weightController.text);
-                        double pricePerGram = await _getPricePerGram();
-                        double totalPrice = weight * pricePerGram;
-
-                        Map<String, dynamic> product = {
-                          'name': _nameController.text,
-                          'type': _selectedType,
-                          'karat': _selectedKarat,
-                          'weight': weight,
-                          'price': totalPrice,
-                          'quantity': int.parse(_quantityController.text),
-                          'sell_price': double.parse(_sellPriceController.text),
-                        };
-
-                        await DatabaseHelper().insertProduct(product);
-                        Navigator.of(context).pop();
-                        setState(() {});
-                      } catch (e) {
-                        // Handle parsing error
-                        print('Error: $e');
-                      }
-                    }
-                  },
-                  child: Text('Add Product'),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 

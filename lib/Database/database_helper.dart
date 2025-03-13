@@ -16,12 +16,12 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'metal_inventory.db');
+    String path = join(await getDatabasesPath(), 'products.db');
     return await openDatabase(
       path,
-      version: 2, // Increment the version number
+      version: 3, // Increase the version number
       onCreate: _onCreate,
-      onUpgrade: _onUpgrade, // Add the onUpgrade method
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -35,15 +35,45 @@ class DatabaseHelper {
         weight REAL,
         price REAL,
         quantity INTEGER,
-        sell_price REAL
+        sell_price REAL,
+        base_price REAL
       )
     ''');
+    await db.execute('''
+      CREATE TABLE profit (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        net_profit REAL,
+        monthly_net_profit REAL,
+        yearly_net_profit REAL
+      )
+    ''');
+    await db.insert('profit', {'net_profit': 0.0, 'monthly_net_profit': 0.0, 'yearly_net_profit': 0.0});
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      await db.execute('ALTER TABLE inventory ADD COLUMN quantity INTEGER');
-      await db.execute('ALTER TABLE inventory ADD COLUMN sell_price REAL');
+      await _addColumnIfNotExists(db, 'inventory', 'quantity', 'INTEGER');
+      await _addColumnIfNotExists(db, 'inventory', 'sell_price', 'REAL');
+      await _addColumnIfNotExists(db, 'inventory', 'base_price', 'REAL');
+    }
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE profit (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          net_profit REAL,
+          monthly_net_profit REAL,
+          yearly_net_profit REAL
+        )
+      ''');
+      await db.insert('profit', {'net_profit': 0.0, 'monthly_net_profit': 0.0, 'yearly_net_profit': 0.0});
+    }
+  }
+
+  Future<void> _addColumnIfNotExists(Database db, String tableName, String columnName, String columnType) async {
+    final result = await db.rawQuery('PRAGMA table_info($tableName)');
+    final columnExists = result.any((column) => column['name'] == columnName);
+    if (!columnExists) {
+      await db.execute('ALTER TABLE $tableName ADD COLUMN $columnName $columnType');
     }
   }
 
@@ -73,6 +103,44 @@ class DatabaseHelper {
       product,
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> updateProductQuantity(int id, int quantity) async {
+    final db = await database;
+    if (quantity <= 0) {
+      await db.delete(
+        'inventory',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } else {
+      await db.update(
+        'inventory',
+        {'quantity': quantity},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> getProfit() async {
+    Database db = await database;
+    final result = await db.query('profit', limit: 1);
+    return result.first;
+  }
+
+  Future<void> updateProfit(double netProfit, double monthlyNetProfit, double yearlyNetProfit) async {
+    Database db = await database;
+    await db.update(
+      'profit',
+      {
+        'net_profit': netProfit,
+        'monthly_net_profit': monthlyNetProfit,
+        'yearly_net_profit': yearlyNetProfit,
+      },
+      where: 'id = ?',
+      whereArgs: [1],
     );
   }
 }

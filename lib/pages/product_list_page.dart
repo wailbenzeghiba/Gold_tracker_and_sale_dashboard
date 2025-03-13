@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
+import 'package:gold_tracking_desktop_stock_app/theme/theme.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/API/GoldApi.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -231,9 +232,16 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product List'),
+        title: Text(
+          'Product List',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: theme.primaryColor,
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: Icon(Icons.refresh),
@@ -267,28 +275,31 @@ class _ProductListPageState extends State<ProductListPage> {
                       itemCount: _filteredProducts.length,
                       itemBuilder: (context, index) {
                         var product = _filteredProducts[index];
-                        return ListTile(
-                          title: Text(product['name']),
-                          subtitle: Text(
-                            'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}',
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  _showEditProductDialog(context, product);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed: () async {
-                                  await DatabaseHelper().deleteProduct(product['id']);
-                                  _loadProducts();
-                                },
-                              ),
-                            ],
+                        return Card(
+                          color: theme.cardColor,
+                          child: ListTile(
+                            title: Text(product['name']),
+                            subtitle: Text(
+                              'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}',
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    _showEditProductDialog(context, product);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () async {
+                                    await DatabaseHelper().deleteProduct(product['id']);
+                                    _loadProducts();
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
