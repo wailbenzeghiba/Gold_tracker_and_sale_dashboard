@@ -19,8 +19,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'metal_inventory.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Increment the version number
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade, // Add the onUpgrade method
     );
   }
 
@@ -32,9 +33,18 @@ class DatabaseHelper {
         type TEXT,
         karat TEXT,
         weight REAL,
-        price REAL
+        price REAL,
+        quantity INTEGER,
+        sell_price REAL
       )
     ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE inventory ADD COLUMN quantity INTEGER');
+      await db.execute('ALTER TABLE inventory ADD COLUMN sell_price REAL');
+    }
   }
 
   Future<int> insertProduct(Map<String, dynamic> product) async {
@@ -45,5 +55,24 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getProducts() async {
     Database db = await database;
     return await db.query('inventory');
+  }
+
+  Future<int> deleteProduct(int id) async {
+    Database db = await database;
+    return await db.delete(
+      'inventory',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> updateProduct(int id, Map<String, dynamic> product) async {
+    Database db = await database;
+    return await db.update(
+      'inventory',
+      product,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

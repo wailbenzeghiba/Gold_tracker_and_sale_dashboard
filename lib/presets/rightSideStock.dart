@@ -15,6 +15,8 @@ class _RightsidestockTState extends State<RightsidestockT> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _weightController = TextEditingController();
+  final _quantityController = TextEditingController();
+  final _sellPriceController = TextEditingController();
   String _selectedType = 'Gold';
   String? _selectedKarat;
   double _price = 0.0;
@@ -124,6 +126,30 @@ class _RightsidestockTState extends State<RightsidestockT> {
                           },
                         ),
                         SizedBox(height: 16),
+                        TextFormField(
+                          controller: _quantityController,
+                          decoration: InputDecoration(labelText: 'Quantity'),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter the quantity';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
+                        TextFormField(
+                          controller: _sellPriceController,
+                          decoration: InputDecoration(labelText: 'Sell Price'),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter the sell price';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 16),
                         Row(
                           children: [
                             Text(
@@ -160,6 +186,8 @@ class _RightsidestockTState extends State<RightsidestockT> {
                                 'karat': _selectedKarat,
                                 'weight': weight,
                                 'price': totalPrice,
+                                'quantity': int.parse(_quantityController.text),
+                                'sell_price': double.parse(_sellPriceController.text),
                               };
 
                               await DatabaseHelper().insertProduct(product);
@@ -187,7 +215,14 @@ class _RightsidestockTState extends State<RightsidestockT> {
                                   return ListTile(
                                     title: Text(product['name']),
                                     subtitle: Text(
-                                      'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}',
+                                      'Type: ${product['type']}, Karat: ${product['karat']}, Weight: ${product['weight']} grams, Price: ${product['price']}, Quantity: ${product['quantity']}, Sell Price: ${product['sell_price']}',
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () async {
+                                        await DatabaseHelper().deleteProduct(product['id']);
+                                        setState(() {});
+                                      },
                                     ),
                                   );
                                 },
