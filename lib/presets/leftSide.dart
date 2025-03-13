@@ -1,6 +1,7 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/Dashboard.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/Settings.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/homePage.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/inventory.dart';
 
@@ -31,10 +32,11 @@ class _LeftsideState extends State<Leftside> {
             Container(
               padding: EdgeInsets.only(left: 16.0 ,right: 16.0, bottom: 16.0),
               child: Row(
+                
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: [  
                   Icon(Icons.bar_chart_sharp, color: const Color.fromARGB(255, 255, 255, 255), size: 24 ), // Gold or mineral icon
-                  SizedBox(width: 8.0),
+                  SizedBox(width: 10.0),
                   Text(
                     'Gildora  ',
                     style: TextStyle(
@@ -46,13 +48,14 @@ class _LeftsideState extends State<Leftside> {
                 ],
               ),
             ),
-            SizedBox(height: 15,),
+            SizedBox(height: 30,),
             Expanded(
               child: ListView(
                 children: [
                   buildListTile(context, 'Dashboard', Dashboard(), Icons.analytics_outlined),
                   buildListTile(context, 'Inventory', Inventory(), Icons.inventory_2_outlined),
                   buildListTile(context, 'Prices', homePage(), Icons.price_change_outlined),
+                  buildListTile(context, 'Settings', Settings(), Icons.settings_outlined),
                 ],
               ),
             ),
@@ -64,7 +67,7 @@ class _LeftsideState extends State<Leftside> {
 
   Widget buildListTile(BuildContext context, String title, Widget page, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
       child: MouseRegion(
         onEnter: (_) {
           setState(() {
