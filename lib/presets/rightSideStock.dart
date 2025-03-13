@@ -43,191 +43,195 @@ class _RightsidestockTState extends State<RightsidestockT> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Stock Prices',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.list),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProductListPage()),
-                              );
-                            },
+                          Text(
+                            'Stock Prices',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          IconButton(
-                            icon: Icon(Icons.refresh),
-                            onPressed: () {
-                              setState(() {});
-                            },
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.list),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ProductListPage()),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.refresh),
+                                onPressed: () {
+                                  setState(() {});
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(labelText: 'Product Name'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a product name';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        DropdownButtonFormField<String>(
-                          value: _selectedType,
-                          decoration: InputDecoration(labelText: 'Metal Type'),
-                          items: _metalTypes.map((String type) {
-                            return DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(type),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedType = newValue!;
-                              _selectedKarat = null;
-                            });
-                          },
-                        ),
-                        if (_selectedType == 'Gold')
-                          DropdownButtonFormField<String>(
-                            value: _selectedKarat,
-                            decoration: InputDecoration(labelText: 'Karat'),
-                            items: _goldKarats.map((String karat) {
-                              return DropdownMenuItem<String>(
-                                value: karat,
-                                child: Text(karat),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                _selectedKarat = newValue;
-                              });
-                            },
-                          ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _weightController,
-                          decoration: InputDecoration(labelText: 'Weight (grams)'),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the weight';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _quantityController,
-                          decoration: InputDecoration(labelText: 'Quantity'),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the quantity';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _sellPriceController,
-                          decoration: InputDecoration(labelText: 'Sell Price'),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the sell price';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        TextFormField(
-                          controller: _basePriceController, // Add base price field
-                          decoration: InputDecoration(labelText: 'Base Price'),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the base price';
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: 16),
-                        Row(
+                      SizedBox(height: 16),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Currency: ',
-                              style: TextStyle(fontSize: 18),
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(labelText: 'Product Name'),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a product name';
+                                }
+                                return null;
+                              },
                             ),
-                            DropdownButton<String>(
-                              value: currency,
-                              items: _currencies.map((String value) {
+                            SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              value: _selectedType,
+                              decoration: InputDecoration(labelText: 'Metal Type'),
+                              items: _metalTypes.map((String type) {
                                 return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
+                                  value: type,
+                                  child: Text(type),
                                 );
                               }).toList(),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  currency = newValue!;
+                                  _selectedType = newValue!;
+                                  _selectedKarat = null;
                                 });
                               },
                             ),
+                            if (_selectedType == 'Gold')
+                              DropdownButtonFormField<String>(
+                                value: _selectedKarat,
+                                decoration: InputDecoration(labelText: 'Karat'),
+                                items: _goldKarats.map((String karat) {
+                                  return DropdownMenuItem<String>(
+                                    value: karat,
+                                    child: Text(karat),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _selectedKarat = newValue;
+                                  });
+                                },
+                              ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _weightController,
+                              decoration: InputDecoration(labelText: 'Weight (grams)'),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter the weight';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _quantityController,
+                              decoration: InputDecoration(labelText: 'Quantity'),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter the quantity';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _sellPriceController,
+                              decoration: InputDecoration(labelText: 'Sell Price'),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter the sell price';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            TextFormField(
+                              controller: _basePriceController, // Add base price field
+                              decoration: InputDecoration(labelText: 'Base Price'),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter the base price';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Text(
+                                  'Currency: ',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                DropdownButton<String>(
+                                  value: currency,
+                                  items: _currencies.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      currency = newValue!;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  double weight = double.parse(_weightController.text);
+                                  double pricePerGram = await _getPricePerGram();
+                                  double totalPrice = weight * pricePerGram;
+
+                                  Map<String, dynamic> product = {
+                                    'name': _nameController.text,
+                                    'type': _selectedType,
+                                    'karat': _selectedKarat,
+                                    'weight': weight,
+                                    'price': totalPrice,
+                                    'quantity': int.parse(_quantityController.text),
+                                    'sell_price': double.parse(_sellPriceController.text),
+                                    'base_price': double.parse(_basePriceController.text), // Add base price to product
+                                  };
+
+                                  await DatabaseHelper().insertProduct(product);
+                                  setState(() {});
+                                }
+                              },
+                              child: Text('Add Product'),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              double weight = double.parse(_weightController.text);
-                              double pricePerGram = await _getPricePerGram();
-                              double totalPrice = weight * pricePerGram;
-
-                              Map<String, dynamic> product = {
-                                'name': _nameController.text,
-                                'type': _selectedType,
-                                'karat': _selectedKarat,
-                                'weight': weight,
-                                'price': totalPrice,
-                                'quantity': int.parse(_quantityController.text),
-                                'sell_price': double.parse(_sellPriceController.text),
-                                'base_price': double.parse(_basePriceController.text), // Add base price to product
-                              };
-
-                              await DatabaseHelper().insertProduct(product);
-                              setState(() {});
-                            }
-                          },
-                          child: Text('Add Product'),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],

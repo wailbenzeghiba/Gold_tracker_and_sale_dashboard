@@ -183,7 +183,7 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   children: [
                     _buildDashboardCard('Total Products', _totalProducts.toString()),
                     SizedBox(height: 16),
-                    _buildDashboardCard('Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2)),
+                    _buildDashboardCard('Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2) ),
                     SizedBox(height: 16),
                     _buildDashboardCard('Total Silver Weight (grams)', _totalSilverWeight.toStringAsFixed(2)),
                     SizedBox(height: 16),
