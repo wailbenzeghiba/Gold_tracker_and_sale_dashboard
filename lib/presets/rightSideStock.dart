@@ -32,8 +32,6 @@ class _RightSideStockState extends State<RightSideStock> {
 
   @override
   Widget build(BuildContext context) {
-    final apiKeyProvider = Provider.of<ApiKeyProvider>(context);
-
     return Expanded(
       child: Container(
         color: const Color.fromARGB(255, 217, 215, 215),
@@ -91,9 +89,6 @@ class _RightSideStockState extends State<RightSideStock> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 16),
-
-                    
                     SizedBox(height: 16),
 
                     // Form Section
