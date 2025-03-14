@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -18,13 +21,15 @@ class MetalPrice {
 double currentPrice = 0.0;
 
 Future<Map<String, Map<String, double>>?> fetchGoldPrices({
+  required BuildContext context,
   required String metal,
   required String weightUnit,
   required String currency,
   String? karat,
 }) async {
+  final apiKeyProvider = Provider.of<ApiKeyProvider>(context, listen: false);
   var headers = {
-    'x-api-key': 'sk_4d8C933891B5CB9D28AE75B871B991BFc7133A12FBb0ba83'
+    'x-api-key': apiKeyProvider.apiKey,
   };
 
   var requestUrl =

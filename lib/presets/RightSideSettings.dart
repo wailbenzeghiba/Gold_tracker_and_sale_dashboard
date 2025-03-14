@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:gold_tracking_desktop_stock_app/presets/WindowButtons.dart';
+import 'package:provider/provider.dart';
+import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
 
 class RightSideSettings extends StatefulWidget {
   const RightSideSettings({super.key});
@@ -17,7 +19,12 @@ class _RightSideSettingsState extends State<RightSideSettings> {
   @override
   void initState() {
     super.initState();
-    _apiKeyController.text = 'sk_4d8C933891B5CB9D28AE75B871B991BFc7133A12FBb0ba82';
+    _loadApiKey();
+  }
+
+  void _loadApiKey() {
+    final apiKeyProvider = Provider.of<ApiKeyProvider>(context, listen: false);
+    _apiKeyController.text = apiKeyProvider.apiKey;
   }
 
   void _changeApiKey() async {
@@ -48,9 +55,8 @@ class _RightSideSettingsState extends State<RightSideSettings> {
     );
 
     if (newKey != null && newKey.isNotEmpty) {
-      setState(() {
-        _apiKeyController.text = newKey;
-      });
+      final apiKeyProvider = Provider.of<ApiKeyProvider>(context, listen: false);
+      await apiKeyProvider.setApiKey(newKey);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('API Key updated successfully')),

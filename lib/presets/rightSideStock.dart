@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/presets/WindowButtons.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/product_list_page.dart';
+import 'package:provider/provider.dart';
+import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/API/GoldApi.dart';
 
-class RightsidestockT extends StatefulWidget {
-  const RightsidestockT({super.key});
+class RightSideStock extends StatefulWidget {
+  const RightSideStock({super.key});
 
   @override
-  _RightsidestockTState createState() => _RightsidestockTState();
+  _RightSideStockState createState() => _RightSideStockState();
 }
 
-class _RightsidestockTState extends State<RightsidestockT> {
+class _RightSideStockState extends State<RightSideStock> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _weightController = TextEditingController();
@@ -29,6 +32,8 @@ class _RightsidestockTState extends State<RightsidestockT> {
 
   @override
   Widget build(BuildContext context) {
+    final apiKeyProvider = Provider.of<ApiKeyProvider>(context);
+
     return Expanded(
       child: Container(
         color: const Color.fromARGB(255, 217, 215, 215),
@@ -86,6 +91,9 @@ class _RightsidestockTState extends State<RightsidestockT> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 16),
+
+                    
                     SizedBox(height: 16),
 
                     // Form Section
@@ -255,7 +263,7 @@ class _RightsidestockTState extends State<RightsidestockT> {
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 double weight = double.parse(_weightController.text);
-                                double pricePerGram = await _getPricePerGram();
+                                double pricePerGram = await _getPricePerGram(context);
                                 double totalPrice = weight * pricePerGram;
 
                                 Map<String, dynamic> product = {
@@ -288,8 +296,23 @@ class _RightsidestockTState extends State<RightsidestockT> {
     );
   }
 
-  Future<double> _getPricePerGram() async {
-    // Logic for fetching metal price
-    return 0.0;
+  Future<double> _getPricePerGram(BuildContext context) async {
+    var metalPrices = await fetchGoldPrices(
+      context: context, // Pass the BuildContext here
+      metal: _selectedType == 'Gold' ? 'XAU' : _selectedType == 'Silver' ? 'XAG' : _selectedType == 'Platinum' ? 'XPT' : 'XPD',
+      weightUnit: 'gram',
+      currency: currency,
+      karat: _selectedKarat,
+    );
+
+    if (metalPrices != null) {
+      if (_selectedType == 'Gold' && _selectedKarat != null) {
+        return metalPrices['XAU']?[_selectedKarat] ?? 0.0;
+      } else {
+        return metalPrices[_selectedType == 'Gold' ? 'XAU' : _selectedType == 'Silver' ? 'XAG' : _selectedType == 'Platinum' ? 'XPT' : 'XPD']?['default'] ?? 0.0;
+      }
+    } else {
+      return 0.0;
+    }
   }
 }

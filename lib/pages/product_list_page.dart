@@ -191,7 +191,7 @@ class _ProductListPageState extends State<ProductListPage> {
                     if (_formKey.currentState!.validate()) {
                       try {
                         double weight = double.parse(_weightController.text);
-                        double pricePerGram = await _getPricePerGram(_selectedType, _selectedKarat, currency);
+                        double pricePerGram = await _getPricePerGram(context, _selectedType, _selectedKarat, currency);
                         double totalPrice = weight * pricePerGram;
 
                         Map<String, dynamic> updatedProduct = {
@@ -224,8 +224,9 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  Future<double> _getPricePerGram(String type, String? karat, String currency) async {
+  Future<double> _getPricePerGram(BuildContext context, String type, String? karat, String currency) async {
     var metalPrices = await fetchGoldPrices(
+      context: context, // Pass the BuildContext here
       metal: type == 'Gold' ? 'XAU' : type == 'Silver' ? 'XAG' : type == 'Platinum' ? 'XPT' : 'XPD',
       weightUnit: 'gram',
       currency: currency,

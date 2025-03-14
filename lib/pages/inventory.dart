@@ -10,7 +10,7 @@ class Inventory extends StatelessWidget {
     return Scaffold(
       body: Row(children: [
         Leftside(),
-        RightsidestockT()
+        RightSideStock()
       ]),
     );
   }
