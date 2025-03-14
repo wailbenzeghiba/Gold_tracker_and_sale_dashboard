@@ -19,7 +19,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'products.db');
     return await openDatabase(
       path,
-      version: 3, // Increase the version number
+      version: 4, // Increase the version number
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -48,6 +48,16 @@ class DatabaseHelper {
       )
     ''');
     await db.insert('profit', {'net_profit': 0.0, 'monthly_net_profit': 0.0, 'yearly_net_profit': 0.0});
+    await db.execute('''
+      CREATE TABLE borrowers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        full_name TEXT,
+        borrowed_money REAL,
+        type TEXT,
+        due_time TEXT,
+        identity_card_image TEXT
+      )
+    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -66,6 +76,18 @@ class DatabaseHelper {
         )
       ''');
       await db.insert('profit', {'net_profit': 0.0, 'monthly_net_profit': 0.0, 'yearly_net_profit': 0.0});
+    }
+    if (oldVersion < 4) {
+      await db.execute('''
+        CREATE TABLE borrowers (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          full_name TEXT,
+          borrowed_money REAL,
+          type TEXT,
+          due_time TEXT,
+          identity_card_image TEXT
+        )
+      ''');
     }
   }
 
@@ -142,5 +164,25 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [1],
     );
+  }
+
+  Future<void> insertBorrower(Map<String, dynamic> borrower) async {
+    final db = await database;
+    await db.insert('borrowers', borrower);
+  }
+
+  Future<List<Map<String, dynamic>>> getBorrowers() async {
+    final db = await database;
+    return await db.query('borrowers');
+  }
+
+  Future<void> updateBorrower(int id, Map<String, dynamic> borrower) async {
+    final db = await database;
+    await db.update('borrowers', borrower, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<void> deleteBorrower(int id) async {
+    final db = await database;
+    await db.delete('borrowers', where: 'id = ?', whereArgs: [id]);
   }
 }

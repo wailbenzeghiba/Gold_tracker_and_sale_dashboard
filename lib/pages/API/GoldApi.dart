@@ -24,7 +24,7 @@ Future<Map<String, Map<String, double>>?> fetchGoldPrices({
   String? karat,
 }) async {
   var headers = {
-    'x-api-key': 'sk_4d8C933891B5CB9D28AE75B871B991BFc7133A12FBb0ba82'
+    'x-api-key': 'sk_4d8C933891B5CB9D28AE75B871B991BFc7133A12FBb0ba83'
   };
 
   var requestUrl =

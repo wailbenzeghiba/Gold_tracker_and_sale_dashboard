@@ -35,6 +35,7 @@ dependencies:
   sqflite_common_ffi: ^2.0.0+1
   bitsdojo_window:
   http:
+  image_picker:
   fl_chart:
 
   # The following adds the Cupertino Icons font to your application.

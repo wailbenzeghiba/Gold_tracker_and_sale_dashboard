@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:gold_tracking_desktop_stock_app/pages/Borrowers.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/Dashboard.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/Settings.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/homePage.dart';
@@ -55,6 +56,7 @@ class _LeftsideState extends State<Leftside> {
                   buildListTile(context, 'Dashboard', Dashboard(), Icons.analytics_outlined),
                   buildListTile(context, 'Inventory', Inventory(), Icons.inventory_2_outlined),
                   buildListTile(context, 'Prices', homePage(), Icons.price_change_outlined),
+                  buildListTile(context, 'Borrowers', Borrowers(), Icons.person_2_outlined),
                   buildListTile(context, 'Settings', Settings(), Icons.settings_outlined),
                 ],
               ),
