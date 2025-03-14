@@ -5,7 +5,6 @@ import 'package:gold_tracking_desktop_stock_app/theme/theme.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:provider/provider.dart';
 import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
-import 'package:gold_tracking_desktop_stock_app/pages/Settings.dart';
 
 void main() {
   sqfliteFfiInit();

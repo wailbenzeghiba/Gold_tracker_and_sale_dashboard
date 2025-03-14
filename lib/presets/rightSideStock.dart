@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/presets/WindowButtons.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/product_list_page.dart';
-import 'package:provider/provider.dart';
-import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
 import 'package:gold_tracking_desktop_stock_app/pages/API/GoldApi.dart';
 
 class RightSideStock extends StatefulWidget {
