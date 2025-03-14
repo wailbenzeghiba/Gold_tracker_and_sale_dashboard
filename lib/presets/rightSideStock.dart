@@ -103,6 +103,8 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -121,6 +123,8 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
                             items: _metalTypes.map((String type) {
                               return DropdownMenuItem<String>(
@@ -146,6 +150,8 @@ class _RightSideStockState extends State<RightSideStock> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
+                                filled: true,
+                              fillColor: Colors.white,
                               ),
                               items: _goldKarats.map((String karat) {
                                 return DropdownMenuItem<String>(
@@ -169,6 +175,8 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
                             keyboardType: TextInputType.number,
                             validator: (value) {
@@ -188,7 +196,10 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
+                            
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -207,6 +218,8 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
                             keyboardType: TextInputType.number,
                           ),
@@ -220,6 +233,8 @@ class _RightSideStockState extends State<RightSideStock> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
                             keyboardType: TextInputType.number,
                           ),
@@ -234,12 +249,14 @@ class _RightSideStockState extends State<RightSideStock> {
                               ),
                               SizedBox(width: 8),
                               DropdownButton<String>(
+                                focusColor: Colors.white,
                                 value: currency,
                                 items: _currencies.map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value),
                                   );
+                                  
                                 }).toList(),
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -252,30 +269,50 @@ class _RightSideStockState extends State<RightSideStock> {
                           SizedBox(height: 24),
 
                           // Submit Button
-                          ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                double weight = double.parse(_weightController.text);
-                                double pricePerGram = await _getPricePerGram(context);
-                                double totalPrice = weight * pricePerGram;
-
-                                Map<String, dynamic> product = {
-                                  'name': _nameController.text,
-                                  'type': _selectedType,
-                                  'karat': _selectedKarat,
-                                  'weight': weight,
-                                  'price': totalPrice,
-                                  'quantity': int.parse(_quantityController.text),
-                                  'sell_price': double.parse(_sellPriceController.text),
-                                  'base_price': double.parse(_basePriceController.text),
-                                };
-
-                                await DatabaseHelper().insertProduct(product);
-                                setState(() {});
-                              }
-                            },
-                            child: Text('Add Product'),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  double weight =
+                                      double.parse(_weightController.text);
+                                  double pricePerGram =
+                                      await _getPricePerGram(context);
+                                  double totalPrice = weight * pricePerGram;
+                            
+                                  Map<String, dynamic> product = {
+                                    'name': _nameController.text,
+                                    'type': _selectedType,
+                                    'karat': _selectedKarat,
+                                    'weight': weight,
+                                    'price': totalPrice,
+                                    'quantity':
+                                        int.parse(_quantityController.text),
+                                    'sell_price':
+                                        double.parse(_sellPriceController.text),
+                                    'base_price':
+                                        double.parse(_basePriceController.text),
+                                  };
+                            
+                                  await DatabaseHelper().insertProduct(product);
+                                  setState(() {});
+                                }
+                              },
+                              child: Text('Add Product', style: TextStyle(color: Colors.white),),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor, // Modern dark color
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 60, vertical: 22),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 4, // Soft shadow for depth
+                                ),
+                              
+                            ),
+                            
                           ),
+
                         ],
                       ),
                     ),
@@ -292,7 +329,13 @@ class _RightSideStockState extends State<RightSideStock> {
   Future<double> _getPricePerGram(BuildContext context) async {
     var metalPrices = await fetchGoldPrices(
       context: context, // Pass the BuildContext here
-      metal: _selectedType == 'Gold' ? 'XAU' : _selectedType == 'Silver' ? 'XAG' : _selectedType == 'Platinum' ? 'XPT' : 'XPD',
+      metal: _selectedType == 'Gold'
+          ? 'XAU'
+          : _selectedType == 'Silver'
+              ? 'XAG'
+              : _selectedType == 'Platinum'
+                  ? 'XPT'
+                  : 'XPD',
       weightUnit: 'gram',
       currency: currency,
       karat: _selectedKarat,
@@ -302,7 +345,14 @@ class _RightSideStockState extends State<RightSideStock> {
       if (_selectedType == 'Gold' && _selectedKarat != null) {
         return metalPrices['XAU']?[_selectedKarat] ?? 0.0;
       } else {
-        return metalPrices[_selectedType == 'Gold' ? 'XAU' : _selectedType == 'Silver' ? 'XAG' : _selectedType == 'Platinum' ? 'XPT' : 'XPD']?['default'] ?? 0.0;
+        return metalPrices[_selectedType == 'Gold'
+                ? 'XAU'
+                : _selectedType == 'Silver'
+                    ? 'XAG'
+                    : _selectedType == 'Platinum'
+                        ? 'XPT'
+                        : 'XPD']?['default'] ??
+            0.0;
       }
     } else {
       return 0.0;
