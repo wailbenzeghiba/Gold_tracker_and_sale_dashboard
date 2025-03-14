@@ -170,7 +170,7 @@ class _RightsideState extends State<Rightside> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              color: const Color.fromARGB(248, 19, 19, 19),
+                              color: Colors.white,
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -181,7 +181,7 @@ class _RightsideState extends State<Rightside> {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: const Color.fromARGB(255, 232, 231, 231),
+                                        color: const Color.fromARGB(255, 6, 6, 6),
                                       ),
                                     ),
                                     SizedBox(height: 8),
@@ -195,7 +195,7 @@ class _RightsideState extends State<Rightside> {
                                                   : '$karat: N/A',
                                           style: TextStyle(
                                             fontSize: 16,
-                                            color: Colors.white,
+                                            color: const Color.fromARGB(255, 14, 14, 14),
                                           ),
                                         );
                                       }).toList()
@@ -208,7 +208,7 @@ class _RightsideState extends State<Rightside> {
                                                 : 'N/A',
                                         style: TextStyle(
                                           fontSize: 16,
-                                          color: Colors.white,
+                                          color: const Color.fromARGB(255, 15, 15, 15),
                                         ),
                                       ),
                                   ],
