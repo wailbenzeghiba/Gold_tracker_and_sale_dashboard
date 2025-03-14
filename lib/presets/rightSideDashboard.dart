@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class RightSideDashboard extends StatefulWidget {
   const RightSideDashboard({super.key});
@@ -54,6 +57,8 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
 
   void _showProductSoldDialog(BuildContext context) {
     final _quantityController = TextEditingController(text: '1');
+    final _sellerNameController = TextEditingController();
+    final _clientNameController = TextEditingController();
 
     showDialog(
       context: context,
@@ -95,6 +100,16 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   controller: _quantityController,
                   decoration: const InputDecoration(labelText: 'Quantity Sold'),
                   keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _sellerNameController,
+                  decoration: const InputDecoration(labelText: 'Seller Name'),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _clientNameController,
+                  decoration: const InputDecoration(labelText: 'Client Name'),
                 ),
               ],
             ),
@@ -138,6 +153,16 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
 
                   await DatabaseHelper().updateProfit(_netProfit, _monthlyNetProfit, _yearlyNetProfit);
 
+                  // Generate and print the receipt
+                  await _generateAndPrintReceipt(
+                    productName: _selectedProduct!['name'],
+                    quantitySold: quantitySold,
+                    sellPrice: sellPrice,
+                    totalPrice: sellPrice * quantitySold,
+                    sellerName: _sellerNameController.text,
+                    clientName: _clientNameController.text,
+                  );
+
                   Navigator.of(context).pop();
                 }
               },
@@ -147,6 +172,42 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
         );
       },
     );
+  }
+
+  Future<void> _generateAndPrintReceipt({
+    required String productName,
+    required int quantitySold,
+    required double sellPrice,
+    required double totalPrice,
+    required String sellerName,
+    required String clientName,
+  }) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Receipt', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 16),
+              pw.Text('Product Name: $productName', style: pw.TextStyle(fontSize: 18)),
+              pw.Text('Quantity Sold: $quantitySold', style: pw.TextStyle(fontSize: 18)),
+              pw.Text('Sell Price: ${sellPrice.toStringAsFixed(2)}', style: pw.TextStyle(fontSize: 18)),
+              pw.Text('Total Price: ${totalPrice.toStringAsFixed(2)}', style: pw.TextStyle(fontSize: 18)),
+              pw.SizedBox(height: 16),
+              pw.Text('Seller Name: $sellerName', style: pw.TextStyle(fontSize: 18)),
+              pw.Text('Client Name: $clientName', style: pw.TextStyle(fontSize: 18)),
+              pw.SizedBox(height: 16),
+              pw.Text('Thank you for your purchase!', style: pw.TextStyle(fontSize: 18)),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
   }
 
   @override
@@ -178,6 +239,7 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
                   ),
                 ],
               ),
+              
               const SizedBox(height: 16),
 
               // Dashboard Data Cards

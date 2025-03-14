@@ -6,8 +6,10 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:provider/provider.dart';
 import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
 
+
 void main() {
   sqfliteFfiInit();
+  
 
   // Set the database factory
   databaseFactory = databaseFactoryFfi;
