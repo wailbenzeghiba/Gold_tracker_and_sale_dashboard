@@ -1,7 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class BorrowerListPage extends StatefulWidget {
   @override
@@ -215,6 +215,28 @@ class _BorrowerListPageState extends State<BorrowerListPage> {
     );
   }
 
+  void _showImageDialog(BuildContext context, String imagePath) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.file(File(imagePath)),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -286,13 +308,18 @@ class _BorrowerListPageState extends State<BorrowerListPage> {
                               ],
                             ),
                             leading: borrower['identity_card_image'] != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.file(
-                                      File(borrower['identity_card_image']),
-                                      width: 50,
-                                      height: 50,
-                                      fit: BoxFit.cover,
+                                ? GestureDetector(
+                                    onTap: () {
+                                      _showImageDialog(context, borrower['identity_card_image']);
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        File(borrower['identity_card_image']),
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   )
                                 : null,
