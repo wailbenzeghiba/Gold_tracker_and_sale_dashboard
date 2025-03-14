@@ -243,19 +243,20 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
               const SizedBox(height: 16),
 
               // Dashboard Data Cards
-              _buildDashboardCard('Total Products', _totalProducts.toString()),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2)),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Total Silver Weight (grams)', _totalSilverWeight.toStringAsFixed(2)),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Total Value', _totalValue.toStringAsFixed(2)),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Net Profit', _netProfit.toStringAsFixed(2)),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Monthly Net Profit', _monthlyNetProfit.toStringAsFixed(2)),
-              const SizedBox(height: 16),
-              _buildDashboardCard('Yearly Net Profit', _yearlyNetProfit.toStringAsFixed(2)),
+             _buildDashboardCard(Icons.inventory, 'Total Products', _totalProducts.toString()),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.currency_bitcoin, 'Total Gold Weight (grams)', _totalGoldWeight.toStringAsFixed(2)),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.monetization_on, 'Total Silver Weight (grams)', _totalSilverWeight.toStringAsFixed(2)),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.attach_money, 'Stock Total Price (DZD)', _totalValue.toStringAsFixed(2)),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.trending_up, 'Net Profit (DZD)', _netProfit.toStringAsFixed(2)),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.calendar_today, 'Monthly Net Profit (DZD)', _monthlyNetProfit.toStringAsFixed(2)),
+const SizedBox(height: 16),
+_buildDashboardCard(Icons.calendar_month, 'Yearly Net Profit (DZD)', _yearlyNetProfit.toStringAsFixed(2)),
+
             ],
           ),
         ),
@@ -263,36 +264,46 @@ class _RightSideDashboardState extends State<RightSideDashboard> {
     );
   }
 
-  Widget _buildDashboardCard(String title, String value) {
-    return Card(
-      color: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
+  Widget _buildDashboardCard(IconData icon, String title, String value) {
+  return Card(
+    color: Colors.white, // Light modern color
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 40, color: Colors.black54),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black54,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
