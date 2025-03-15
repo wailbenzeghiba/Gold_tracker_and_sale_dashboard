@@ -24,7 +24,8 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
   final List<String> _types = ['Give', 'Take'];
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _identityCardImage = File(pickedFile.path);
@@ -49,23 +50,6 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                   Expanded(child: MoveWindow()), // ✅ Make it draggable
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.list, size: 20),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BorrowerListPage(),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.refresh, size: 20),
-                        onPressed: () {
-                          setState(() {});
-                        },
-                      ),
                       const Windowbuttons(),
                     ],
                   ),
@@ -119,7 +103,8 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Full Name Input
                       TextFormField(
                         controller: _fullNameController,
-                        decoration: const InputDecoration(labelText: 'Full Name'),
+                        decoration:
+                            const InputDecoration(labelText: 'Full Name'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the full name';
@@ -132,11 +117,15 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Borrowed Money Input
                       TextFormField(
                         controller: _borrowedMoneyController,
-                        decoration: const InputDecoration(labelText: 'Borrowed Money'),
+                        decoration:
+                            const InputDecoration(labelText: 'Borrowed Money'),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the borrowed money';
+                          }
+                          if (double.tryParse(value) == null) {
+                            return 'Please enter a valid number';
                           }
                           return null;
                         },
@@ -164,7 +153,8 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Due Time Input
                       TextFormField(
                         controller: _dueTimeController,
-                        decoration: const InputDecoration(labelText: 'Due Time (optional)'),
+                        decoration: const InputDecoration(
+                            labelText: 'Due Time (optional)'),
                         keyboardType: TextInputType.datetime,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -175,7 +165,8 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                           );
                           if (pickedDate != null) {
                             setState(() {
-                              _dueTimeController.text = pickedDate.toString().split(' ')[0];
+                              _dueTimeController.text =
+                                  pickedDate.toString().split(' ')[0];
                             });
                           }
                         },
@@ -185,18 +176,22 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Pick Image Button
                       Row(
                         children: [
-                          
                           ElevatedButton.icon(
                             onPressed: _pickImage,
                             icon: Icon(Icons.image_outlined),
-                            label: Text('Pick Identity Card Image' , style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255)),),
+                            label: Text(
+                              'Pick Identity Card Image',
+                              style: TextStyle(
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255)),
+                            ),
                             style: ElevatedButton.styleFrom(
                               iconColor: Colors.white70,
-                              foregroundColor: const Color.fromARGB(255, 237, 237, 237), 
-                              backgroundColor: Theme.of(context).primaryColor, 
+                              foregroundColor:
+                                  const Color.fromARGB(255, 237, 237, 237),
+                              backgroundColor: Theme.of(context).primaryColor,
                             ),
                           ),
-                          
                           const SizedBox(width: 16),
                           _identityCardImage != null
                               ? Image.file(
@@ -215,7 +210,8 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                           if (_formKey.currentState!.validate()) {
                             Map<String, dynamic> borrower = {
                               'full_name': _fullNameController.text,
-                              'borrowed_money': double.parse(_borrowedMoneyController.text),
+                              'borrowed_money':
+                                  double.parse(_borrowedMoneyController.text),
                               'type': _selectedType,
                               'due_time': _dueTimeController.text.isNotEmpty
                                   ? _dueTimeController.text
@@ -242,4 +238,3 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
     );
   }
 }
-
