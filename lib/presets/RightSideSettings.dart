@@ -3,6 +3,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:gold_tracking_desktop_stock_app/presets/WindowButtons.dart';
 import 'package:provider/provider.dart';
 import 'package:gold_tracking_desktop_stock_app/providers/api_key_provider.dart';
+import 'package:gold_tracking_desktop_stock_app/Database/database_helper.dart';
 
 class RightSideSettings extends StatefulWidget {
   const RightSideSettings({super.key});
@@ -55,7 +56,8 @@ class _RightSideSettingsState extends State<RightSideSettings> {
     );
 
     if (newKey != null && newKey.isNotEmpty) {
-      final apiKeyProvider = Provider.of<ApiKeyProvider>(context, listen: false);
+      final apiKeyProvider =
+          Provider.of<ApiKeyProvider>(context, listen: false);
       await apiKeyProvider.setApiKey(newKey);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,7 +70,8 @@ class _RightSideSettingsState extends State<RightSideSettings> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: const Color.fromARGB(255, 217, 215, 215), // ✅ Match background color
+        color: const Color.fromARGB(
+            255, 217, 215, 215), // ✅ Match background color
         child: Column(
           children: [
             // Top bar with consistent color and buttons
@@ -131,12 +134,15 @@ class _RightSideSettingsState extends State<RightSideSettings> {
                             },
                             borderRadius: BorderRadius.circular(8),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'API Key',
@@ -165,17 +171,62 @@ class _RightSideSettingsState extends State<RightSideSettings> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Submit Button
+                          //Reseting the profit
                           ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
+                            onPressed: () async {
+                              bool confirm = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Confirm Reset'),
+                                    content: const Text(
+                                        'Are you sure you want to reset the profit? This action cannot be undone.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(false); // Cancel
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(true); // Confirm
+                                        },
+                                        child: const Text('Confirm',
+                                            style:
+                                                TextStyle(color: Colors.red)),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                              if (confirm == true) {
+                                await DatabaseHelper()
+                                    .updateProfit(0.0, 0.0, 0.0);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Settings saved')),
+                                  const SnackBar(
+                                    content: Text('Profit has been reset'),
+                                    backgroundColor: Colors.green,
+                                  ),
                                 );
                               }
                             },
-                            child: const Text('Save Settings'),
-                          ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 36, vertical: 22),
+                              textStyle: const TextStyle(fontSize: 16),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)), // No rounded corners
+                              ),
+                            ),
+                            child: const Text('Reset Profit'),
+                          )
                         ],
                       ),
                     ),
