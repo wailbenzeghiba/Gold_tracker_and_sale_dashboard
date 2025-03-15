@@ -151,7 +151,7 @@ class _RightSideStockState extends State<RightSideStock> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 filled: true,
-                              fillColor: Colors.white,
+                                fillColor: Colors.white,
                               ),
                               items: _goldKarats.map((String karat) {
                                 return DropdownMenuItem<String>(
@@ -183,6 +183,9 @@ class _RightSideStockState extends State<RightSideStock> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter the weight';
                               }
+                              if (double.tryParse(value) == null) {
+                                return 'Please enter a valid number';
+                              }
                               return null;
                             },
                           ),
@@ -199,11 +202,13 @@ class _RightSideStockState extends State<RightSideStock> {
                               filled: true,
                               fillColor: Colors.white,
                             ),
-                            
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter the quantity';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please enter a valid number';
                               }
                               return null;
                             },
@@ -221,6 +226,15 @@ class _RightSideStockState extends State<RightSideStock> {
                               filled: true,
                               fillColor: Colors.white,
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the quantity';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
                             keyboardType: TextInputType.number,
                           ),
                           SizedBox(height: 16),
@@ -236,6 +250,15 @@ class _RightSideStockState extends State<RightSideStock> {
                               filled: true,
                               fillColor: Colors.white,
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the quantity';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please enter a valid number';
+                              }
+                              return null;
+                            },
                             keyboardType: TextInputType.number,
                           ),
                           SizedBox(height: 16),
@@ -256,7 +279,6 @@ class _RightSideStockState extends State<RightSideStock> {
                                     value: value,
                                     child: Text(value),
                                   );
-                                  
                                 }).toList(),
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -278,7 +300,7 @@ class _RightSideStockState extends State<RightSideStock> {
                                   double pricePerGram =
                                       await _getPricePerGram(context);
                                   double totalPrice = weight * pricePerGram;
-                            
+
                                   Map<String, dynamic> product = {
                                     'name': _nameController.text,
                                     'type': _selectedType,
@@ -292,27 +314,27 @@ class _RightSideStockState extends State<RightSideStock> {
                                     'base_price':
                                         double.parse(_basePriceController.text),
                                   };
-                            
+
                                   await DatabaseHelper().insertProduct(product);
                                   setState(() {});
                                 }
                               },
-                              child: Text('Add Product', style: TextStyle(color: Colors.white),),
+                              child: Text(
+                                'Add Product',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor, // Modern dark color
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 60, vertical: 22),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 4, // Soft shadow for depth
+                                backgroundColor: Theme.of(context)
+                                    .primaryColor, // Modern dark color
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 60, vertical: 22),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                              
+                                elevation: 4, // Soft shadow for depth
+                              ),
                             ),
-                            
                           ),
-
                         ],
                       ),
                     ),

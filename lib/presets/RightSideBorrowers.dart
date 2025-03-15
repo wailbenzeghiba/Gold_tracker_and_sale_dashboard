@@ -103,8 +103,14 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Full Name Input
                       TextFormField(
                         controller: _fullNameController,
-                        decoration:
-                            const InputDecoration(labelText: 'Full Name'),
+                        decoration: InputDecoration(
+                          labelText: 'Full Name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the full name';
@@ -117,8 +123,14 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Borrowed Money Input
                       TextFormField(
                         controller: _borrowedMoneyController,
-                        decoration:
-                            const InputDecoration(labelText: 'Borrowed Money'),
+                        decoration: InputDecoration(
+                          labelText: 'Borrowed Money',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -135,7 +147,14 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Type Dropdown
                       DropdownButtonFormField<String>(
                         value: _selectedType,
-                        decoration: const InputDecoration(labelText: 'Type'),
+                        decoration: InputDecoration(
+                          labelText: 'Type',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         items: _types.map((String type) {
                           return DropdownMenuItem<String>(
                             value: type,
@@ -153,8 +172,14 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       // Due Time Input
                       TextFormField(
                         controller: _dueTimeController,
-                        decoration: const InputDecoration(
-                            labelText: 'Due Time (optional)'),
+                        decoration: InputDecoration(
+                          labelText: 'Due Time (optional)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         keyboardType: TextInputType.datetime,
                         onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
@@ -205,28 +230,42 @@ class _RightSideBorrowersState extends State<RightSideBorrowers> {
                       const SizedBox(height: 16),
 
                       // Add Borrower Button
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> borrower = {
-                              'full_name': _fullNameController.text,
-                              'borrowed_money':
-                                  double.parse(_borrowedMoneyController.text),
-                              'type': _selectedType,
-                              'due_time': _dueTimeController.text.isNotEmpty
-                                  ? _dueTimeController.text
-                                  : null,
-                              'identity_card_image': _identityCardImage != null
-                                  ? _identityCardImage!.path
-                                  : null,
-                            };
-
-                            await DatabaseHelper().insertBorrower(borrower);
-                            setState(() {});
-                          }
-                        },
-                        child: const Text('Add Borrower'),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              Map<String, dynamic> borrower = {
+                                'full_name': _fullNameController.text,
+                                'borrowed_money':
+                                    double.parse(_borrowedMoneyController.text),
+                                'type': _selectedType,
+                                'due_time': _dueTimeController.text.isNotEmpty
+                                    ? _dueTimeController.text
+                                    : null,
+                                'identity_card_image': _identityCardImage != null
+                                    ? _identityCardImage!.path
+                                    : null,
+                              };
+                              
+                        
+                              await DatabaseHelper().insertBorrower(borrower);
+                              setState(() {});
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor, // Modern dark color
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 60, vertical: 22),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 4, // Soft shadow for depth
+                                ),
+                          child: const Text('Add Borrower' , style: TextStyle(color: Colors.white),),
+                        ),
                       ),
+                      
                     ],
                   ),
                 ),
